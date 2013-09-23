@@ -20,11 +20,15 @@ function mem_date_processing($start_date, $end_date) {
 			
 			// reset our variables
 			$event_date = '';
+			$event_date_short = '';
 			$event_date_yr = '';
 			$start_year = '';
 			$end_year = '';
+			$unix_start = '';
 			$event_is_future = false;
 			$ndash = '<span class="ndash">–</span>';
+			
+			global $mem_unix_now;
 			
 			// 1) test and define start date values
 			
@@ -51,6 +55,12 @@ function mem_date_processing($start_date, $end_date) {
 			// 2) test and define END date values
 		
 		if ($end_date !== "" ) { 
+				
+				$end_date_iso = $end_date;
+				if (strlen($end_date_iso) > 10) {
+						$end_date_iso = substr_replace($end_date_iso, 'T', 10 , 1);
+				}
+				
 				if (strlen($end_date) > 5) { // Yes = the month is defined
 						
 						$unix_end = strtotime($end_date);
@@ -67,6 +77,8 @@ function mem_date_processing($start_date, $end_date) {
 				if ($end_year != $start_year ) {
 					$event_date_yr .= $ndash . $end_year;
 				}
+		} else { // no end date defined
+				$end_date_iso = $start_date_iso;
 		}
 			
 			// 3) process the values
@@ -232,6 +244,7 @@ function mem_date_processing($start_date, $end_date) {
 			    "date" => $event_date, // Jeudi 19 septembre 2013
 			    "date-short" => $event_date_short,
 			    "start-iso" => $start_date_iso,
+			    "end-iso" => $end_date_iso,
 			    "start-unix" => $unix_start,
 			    "date-year" => $event_date_yr, // can be 2012-2013
 			    "start-year" => $start_year,

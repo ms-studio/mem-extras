@@ -5,6 +5,7 @@
 
 // Use the textdomain of the MEM plugin: 
 // example: __('Event Dates', 'mem')
+// example: _x('Event Dates',  'context explanation', 'mem')
 
 
 function mem_date_processing($start_date, $end_date) {
@@ -43,7 +44,7 @@ function mem_date_processing($start_date, $end_date) {
 					if (strlen($start_date) > 5) { // yes = the MONTH is defined
 							
 							$unix_start = strtotime($start_date);
-							$start_year = date_i18n( "Y", $unix_start);
+							$start_year = date( "Y", $unix_start);
 							$start_month = date_i18n( "F", $unix_start);
 					
 					} else { // no = only the YEAR is defined
@@ -71,7 +72,7 @@ function mem_date_processing($start_date, $end_date) {
 				if (strlen($end_date) > 5) { // Yes = the month is defined
 						
 						$unix_end = strtotime($end_date);
-						$end_year = date_i18n( "Y", $unix_end);
+						$end_year = date( "Y", $unix_end);
 						$end_month = date_i18n( "F", $unix_end);
 				
 				} else { // No = only the year is defined
@@ -120,8 +121,8 @@ function mem_date_processing($start_date, $end_date) {
 									// 4) test if start/end occurs the same day
 									// ********************************
 									
-									$start_day = date_i18n( "j", $unix_start);
-									$end_day = date_i18n( "j", $unix_end);
+									$start_day = date( "j", $unix_start); // j = 1 to 31
+									$end_day = date( "j", $unix_end);
 									
 									$event_date_short = date_i18n( "F Y", $unix_start);
 									
@@ -130,22 +131,29 @@ function mem_date_processing($start_date, $end_date) {
 											// 5) the events must have a different time
 											// *****************************************
 											
-												$event_date = date_i18n( "l j F Y, H\hi", $unix_start); // mardi 3 janvier 2012
-												$event_date .= $ndash . date_i18n( "H\hi", $unix_end);
-									
-									} else { // two different days, but same month.
-										
-												if ( (date_i18n( "j", $unix_start)) == 1) { // 1er
-												  $event_date = date_i18n( "\D\u j\e\\r", $unix_start);
-												} else { // sinon
-												  $event_date .= date_i18n( "\D\u j", $unix_start); // Du 3 ...	
+												if ( (date( "j", $unix_start)) == 1) { // 1er
+												  $event_date = date_i18n( _x('l F jS Y, g:i a','First day of month','mem'), $unix_start);
+												} else {
+												  $event_date = date_i18n( _x('l F jS Y, g:i a','Other day of month','mem'), $unix_start);
 												}
 												
-												if ( (date_i18n( "j", $unix_end)) == 1) { // 1er
-												  $event_date = date_i18n( " \a\u j\e\\r F Y", $unix_end);
-												} else { // sinon
-												  $event_date .= date_i18n( " \a\u j F Y", $unix_end);	
-												} // au 17 mars 2012
+												// add the end time
+												$event_date .= $ndash . date_i18n( __('g:i a','mem'), $unix_end);
+									
+									} else { // two different days, but same month.
+									
+												// March 4th-15th 2013
+										
+												if ( (date( "j", $unix_start)) == 1) { // 1er
+												  $event_date = date_i18n( _x( 'F jS', 'First day of same month', 'mem' ), $unix_start); // \D\u j\e\\r
+												} else {
+												  $event_date = date_i18n( _x( 'F jS', 'Other day of same month', 'mem' ), $unix_start); // Du 3 ...	// \D\u j
+												}
+												
+												// end = cannot be 1st!
+												
+												  $event_date .= date_i18n( __( '–jS Y', 'mem' ), $unix_end);	
+												// au 17 mars 2012
 									
 									}
 									
@@ -158,9 +166,9 @@ function mem_date_processing($start_date, $end_date) {
 									if (strlen($start_date) > 7)  {
 									
 											if ( (date_i18n( "j", $unix_start)) == 1) { // 1er
-											  $event_date = date_i18n( _x( 'F jS', 'First day of month', 'mem' ), $unix_start);
+											  $event_date = date_i18n( _x( 'F jS', 'First day of diff month', 'mem' ), $unix_start);
 											} else { // sinon
-											  $event_date = date_i18n( _x( 'F jS', 'Other day of month', 'mem' ), $unix_start);	
+											  $event_date = date_i18n( _x( 'F jS', 'Other day of diff month', 'mem' ), $unix_start);	
 											}
 											
 											if ( (date_i18n( "j", $unix_end)) == 1) { // 1er
@@ -184,7 +192,15 @@ function mem_date_processing($start_date, $end_date) {
 								
 								if (strlen($start_date) > 7) { // START DAY is defined
 								
-										$event_date = date_i18n( "\D\u j F Y", $unix_start); // 3 janvier 2010 ...
+								   // December 15th 2013 - January 3rd 2014 
+								
+										if ( (date_i18n( "j", $unix_start)) == 1) { // 1er
+										  $event_date = date_i18n( _x( 'F jS Y', 'First day of diff year', 'mem' ), $unix_start);
+//										  $event_date = date_i18n( "\D\u j F Y", $unix_start); // 3 janvier 2010 ...
+										} else { // sinon
+										  $event_date = date_i18n( _x( 'F jS Y', 'Other day of diff year', 'mem' ), $unix_start);
+//										  $event_date = date_i18n( "\D\u j F Y", $unix_start); // 3 janvier 2010 ...	
+										}
 										
 								} else { // START DAY not defined, only MONTH.
 										
@@ -192,11 +208,16 @@ function mem_date_processing($start_date, $end_date) {
 										
 								}
 								
-								// what about the END date?
+								// Now, the end date
 								
 								if (strlen($end_date) > 7) { // END DAY is defined
 								
-										$event_date .= date_i18n( " \a\u j F Y", $unix_end); // 17 mars 2012
+//										$event_date .= date_i18n( " \a\u j F Y", $unix_end); // 17 mars 2012
+										if ( (date_i18n( "j", $unix_end)) == 1) { // 1er
+										  $event_date .= date_i18n( _x( ' – F jS Y', 'First day of month', 'mem' ), $unix_end);
+										} else { // sinon
+										  $event_date .= date_i18n( _x( ' – F jS Y', 'Other day of month', 'mem' ), $unix_end);	
+										}
 								
 								} else if (strlen($end_date) > 5) { // END MONTH is defined
 								
@@ -205,7 +226,7 @@ function mem_date_processing($start_date, $end_date) {
 								
 								} else { // only END YEAR is defined
 								
-										$event_date_short .= $ndash . date_i18n( "Y", $unix_end); // mars 2012
+										$event_date_short .= $ndash . date( "Y", $unix_end); // mars 2012
 										$event_date = $event_date_short;
 								}
 							
@@ -226,7 +247,7 @@ function mem_date_processing($start_date, $end_date) {
 								
 									if (strlen($start_date) > 11) { // START TIME is defined.
 											
-												if ( (date_i18n( "j", $unix_start)) == 1) { // 1st day of month ?
+												if ( (date( "j", $unix_start)) == 1) { // 1st day of month ?
 												  $event_date = date_i18n( _x( 'l F jS Y, g:i a', 'First day of month', 'mem' ), $unix_start);
 												} else {
 												  $event_date = date_i18n( _x( 'l F jS Y, g:i a', 'Other day of month', 'mem' ), $unix_start);	
@@ -234,7 +255,7 @@ function mem_date_processing($start_date, $end_date) {
 											
 										} else { // START TIME is not defined.
 										
-												if ( (date_i18n( "j", $unix_start)) == 1) { // 1st day of month ?
+												if ( (date( "j", $unix_start)) == 1) { // 1st day of month ?
 												  $event_date = date_i18n( _x('l, F jS Y', 'First day of month', 'mem'), $unix_start);
 												} else {
 												  $event_date = date_i18n( _x('l, F jS Y', 'Other day of month', 'mem'), $unix_start);
@@ -292,7 +313,7 @@ function mem_date_processing($start_date, $end_date) {
 			    "date-year" => $event_date_yr, // can be 2012-2013
 			    "start-year" => $start_year,
 			    "end-year" => $end_year,
-			    "is-future" => $event_is_future // true or false
+			    "is-future" => $event_is_future, // true or false
 			    "is-ongoing" => $event_is_ongoing // true or false
 			);
 			

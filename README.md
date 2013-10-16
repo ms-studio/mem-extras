@@ -17,3 +17,9 @@ We now have a $mem_date array, which contains lots of useful information.
 We then can output the date with 
 
     echo $archive_array[$key]["date-short"];
+    
+## NOTE ##
+
+Call the mem_date_processing function by putting an include into the main `functions.php` file:
+
+    require_once('mem-extras/date-function.php');

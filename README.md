@@ -1,7 +1,7 @@
 mem-extras
 ==========
 
-Useful functions for the MEM WordPress plugin.
+Useful functions for the [MEM WordPress plugin](https://github.com/ms-studio/minimalistic-event-manager).
 
 Adds a `mem_date_processing($start,$end)` function, with start and end date arguments.
 

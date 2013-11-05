@@ -218,6 +218,8 @@ function mem_date_processing($start_date, $end_date) {
 										} else { // sinon
 										  $event_date .= date_i18n( _x( ' – F jS Y', 'Other day of month', 'mem' ), $unix_end);	
 										}
+										
+										$event_date_short .= ' '.$ndash .' '. date_i18n( "F Y", $unix_end); // mars 2012
 								
 								} else if (strlen($end_date) > 5) { // END MONTH is defined
 								

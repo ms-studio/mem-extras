@@ -65,20 +65,21 @@ function mem_date_processing($start_date, $end_date) {
 		if ($end_date !== "" ) { 
 				
 				$end_date_iso = $end_date;
+				$unix_end = strtotime($end_date);
+				
 				if (strlen($end_date_iso) > 10) { // time is defined
 						$end_date_iso = substr_replace($end_date_iso, 'T', 10 , 1);
 				}
 				
 				if (strlen($end_date) > 5) { // Yes = the month is defined
 						
-						$unix_end = strtotime($end_date);
 						$end_year = date( "Y", $unix_end);
 						$end_month = date_i18n( "F", $unix_end);
 				
 				} else { // No = only the year is defined
 				
 						$end_year = $end_date;
-						// let's create a fake Unix_End:
+						// fix for $unix_end:
 						$unix_end = strtotime($end_year.'-01-01');
 				}
 				
@@ -138,7 +139,7 @@ function mem_date_processing($start_date, $end_date) {
 												}
 												
 												// add the end time
-												$event_date .= $ndash . date_i18n( __('g:i a','mem'), $unix_end);
+												 $event_date .= $ndash . date( __('g:i a','mem'), $unix_end);
 									
 									} else { // two different days, but same month.
 									

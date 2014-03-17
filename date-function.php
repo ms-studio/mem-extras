@@ -171,25 +171,25 @@ function mem_date_processing($start_date, $end_date) {
 			
 			if ($start_date !== "" ) {
 					
-				// condition 2: do we have more than 5 chars ?
-				// *******************************************
+				// Yes? - Condition 2: do we have more than 5 chars ?
+				// **************************************************
 				
 				if (strlen($start_date) > 5) { // yes = MONTH is defined
 				
-					// condition 3: do we have an end date ?
-					// *************************************
+					// Yes? - Condition 3: do we have an end date ?
+					// ********************************************
 							
 						if ($end_date !== "" ) {
 						
 							// YES, we have START and END date.
 							// ********************************
 												
-							// condition 4: does start/end occur in the same year?
+							// Condition 4: does start/end occur in the same year?
 							// ***************************************************
 							
 							if ($start_year == $end_year) { // YES, same YEAR!
 								
-								// condition 5: do start/end occur the same month?
+								// Condition 5: do start/end occur the same month?
 								// ***********************************************
 								
 								if ($start_month == $end_month) { // YES, same MONTH!
